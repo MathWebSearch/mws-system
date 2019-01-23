@@ -1,0 +1,80 @@
+version: '3'
+services:
+
+  ##
+  ## Nginx entry point
+  ##
+  nginx:
+    image: jwilder/nginx-proxy:alpine
+    env_file:
+      - .config/nginx
+    
+    labels:
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true
+    
+    volumes:
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+      - "nginx_dhparam:/etc/nginx/dhparam"
+      - "nginx_html:/usr/share/nginx/html"
+      - "nginx_vhost:/etc/nginx/vhost.d"
+      - "nginx_certs:/etc/nginx/certs"
+       
+    depends_on:
+    - frontend
+    
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - internal
+      - default
+  
+  ##
+  ## Letsencrypt-Companion
+  ##
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "nginx_dhparam:/etc/nginx/dhparam"
+      - "nginx_html:/usr/share/nginx/html"
+      - "nginx_vhost:/etc/nginx/vhost.d"
+      - "nginx_certs:/etc/nginx/certs"
+
+    depends_on:
+      - nginx
+    
+    networks:
+      - internal
+
+  ###
+  ### MWS Frontend
+  ###
+  frontend:
+    image: kwarc/mws-frontend
+    env_file:
+      - .config/frontend
+    networks:
+      - internal
+
+  ###
+  ### The MWS backend
+  ###
+  mws:
+    image: kwarc/mathwebsearch
+    volumes:
+      - harvests:/data/
+    networks:
+      - internal
+
+volumes:
+  harvests:
+  nginx_vhost:
+  nginx_certs:
+  nginx_html:
+  nginx_dhparam:
+
+
+networks:
+  internal:

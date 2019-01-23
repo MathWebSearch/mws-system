@@ -1,0 +1,116 @@
+#!/bin/bash
+
+#### Loading / Writing configuration
+
+function load_prev_config() {
+
+    # load the defaults from the file if it exists
+    if [ -f ".config/save" ]; then
+        source ".config/save";
+    
+    # else load some defaults
+    else
+        echo "No saved settings found, loading defaults for local development setup. "
+        SET_MWS_DOMAIN_NAME="localhost"
+    fi;
+}
+
+function save_current_config() {
+    {
+        echo "echo \"Loaded previous settings from $(date)\"";
+        echo_save_line "SET_MWS_DOMAIN_NAME" "$MWS_DOMAIN_NAME";
+        echo_save_line "SET_MWS_SSL_EMAIL" "$MWS_SSL_EMAIL";
+    } > .config/save
+
+    echo "Wrote .config/save"
+}
+
+function echo_save_line() {
+    echo "$1='$2'"
+}
+
+#### Reading configuration settings
+
+function read_mws_domain_name() {
+    cat << EOF
+When running in a production setup, MWS needs to know the domain
+name it is running under. Please either enter a domain name now, or
+leave it blank to use "$SET_MWS_DOMAIN_NAME". 
+
+EOF
+
+    printf "MWS_DOMAIN_NAME="
+    read MWS_DOMAIN_NAME
+    if [ -z "$MWS_DOMAIN_NAME" ]
+    then
+        MWS_DOMAIN_NAME="$SET_MWS_DOMAIN_NAME"
+    fi;
+    echo "export MWS_DOMAIN_NAME=$MWS_DOMAIN_NAME"
+}
+
+function read_mws_ssl_email() {
+    cat << EOF
+If SSL Certificates should be automatically retrieved, MWS needs to
+know an email address to register a new Let’s Encrypt account under.
+Please note by entering an email address here, you implicitly agree to
+the Let’s Encrypt subscriber agreement currently found under
+https://letsencrypt.org/documents/2017.11.15-LE-SA-v1.2.pdf. 
+Defaults to "$SET_MWS_SSL_EMAIL".
+
+
+EOF
+
+    printf "MWS_SSL_EMAIL="
+    read MWS_SSL_EMAIL
+    if [ -z "$MWS_SSL_EMAIL" ]
+    then
+        MWS_SSL_EMAIL="$SET_MWS_SSL_EMAIL"
+    fi;
+    echo "export MWS_SSL_EMAIL=$MWS_SSL_EMAIL"
+}
+
+### Writing configuration
+
+
+function write_nginx_config() {
+    echo "DEFAULT_HOST=$MWS_DOMAIN_NAME" > .config/nginx
+
+    echo "Wrote .config/nginx"
+}
+
+function write_frontend_config() {
+    echo "VIRTUAL_HOST=$MWS_DOMAIN_NAME" > .config/frontend
+
+    if [ ! -z "$MWS_SSL_EMAIL" ]; then
+        echo "LETSENCRYPT_HOST=$MWS_DOMAIN_NAME" >> .config/frontend
+        echo "LETSENCRYPT_EMAIL=$MWS_SSL_EMAIL"  >> .config/frontend
+    fi;
+
+    echo "Wrote .config/frontend"
+}
+
+function main() {
+    echo "MWS DOCKER CONFIGURATION"
+
+    load_prev_config
+
+    echo ""
+    read_mws_domain_name
+
+    echo ""
+    read_mws_ssl_email
+
+
+    echo ""
+    echo "WRITING CONFIGURATION"
+    
+    mkdir -p .config
+
+    save_current_config
+    write_nginx_config
+    write_frontend_config
+
+    echo "Done. "
+}
+
+main
