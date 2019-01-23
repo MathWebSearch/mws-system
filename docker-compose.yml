@@ -52,7 +52,7 @@ services:
   ### MWS Frontend
   ###
   frontend:
-    image: kwarc/mws-frontend
+    image: mathwebsearch/frontend
     env_file:
       - .config/frontend
     networks:
@@ -62,9 +62,16 @@ services:
   ### The MWS backend
   ###
   mws:
-    image: kwarc/mathwebsearch
+    image: mathwebsearch/mathwebsearch
     volumes:
       - harvests:/data/
+    networks:
+      - internal
+  
+  ###
+  ### The LaTeXML backend
+  latexml:
+    image: mathwebsearch/latexml-mws
     networks:
       - internal
 

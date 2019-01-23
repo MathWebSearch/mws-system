@@ -7,8 +7,9 @@ The MathWebSearch System, managed with Docker Compose.
     - [jwilder/nginx-proxy](https://github.com/jwilder/nginx-proxy) - entry point taking care of https -> http
     - [jrcs/letsencrypt-nginx-proxy-companion](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion) - Manages and renews letsencrypt certificates
 - MWS System
-    - [kwarc/mws](https://github.com/kwarc/mws) - the MWS daemon
-    - [kwarc/mws-frontend](https://github.com/kwarc/mws-frontend) - a browser frontend to MWS
+    - [MathWebSearch/mws](https://github.com/MathWebSearch/mws) - the MWS daemon
+    - [MathWebSearch/frontend](https://github.com/MathWebSearch/frontend) - a browser frontend to MWS
+    - [MathWebSearch/LaTeXML-MathWebSearch-Docker](https://github.com/MathWebSearch/LaTeXML-MathWebSearch-Docker) - latexml backend to allow latex-like queries
 
 ## Configuration
 
