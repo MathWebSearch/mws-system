@@ -9,7 +9,7 @@ The MathWebSearch System, managed with Docker Compose.
 - MWS System
     - [MathWebSearch/mws](https://github.com/MathWebSearch/mws) - the MWS daemon
     - [MathWebSearch/frontend](https://github.com/MathWebSearch/frontend) - a browser frontend to MWS
-    - [MathWebSearch/LaTeXML-MathWebSearch-Docker](https://github.com/MathWebSearch/LaTeXML-MathWebSearch-Docker) - latexml backend to allow latex-like queries
+    - [MathWebSearch/latexml-mws-docker](https://github.com/MathWebSearch/latexml-mws-docker) - latexml backend to allow latex-like queries
 
 ## Configuration
 
