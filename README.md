@@ -49,7 +49,7 @@ docker-compose down -v
 Run
 
 ```bash
-    docker run -t -i --rm -e MWS_DOCKER_LABEL="org.mathweb.mwsd" -v /path/to/harvests:/data/ -v index:/index/ -v /var/run/docker.sock:/var/run/docker.sock mathwebsearch/mws-updater
+    docker run -t -i --rm -e MWS_DOCKER_LABEL="org.mathweb.mwsd" -v /path/to/harvests:/data/ -v index:/index/ -v /var/run/docker.sock:/var/run/docker.sock mathwebsearch/mws-indexer
 ```
 
 to update the index.
