@@ -63,8 +63,11 @@ services:
   ###
   mws:
     image: mathwebsearch/mathwebsearch
+    labels: 
+      - org.mathweb.mwsd
+    command: /mws/bin/mwsd -D /indexes/ -p 8080
     volumes:
-      - harvests:/data/
+      - indexes:/indexes/
     networks:
       - internal
   
@@ -76,7 +79,8 @@ services:
       - internal
 
 volumes:
-  harvests:
+  indexes:
+    external: true
   nginx_vhost:
   nginx_certs:
   nginx_html:
