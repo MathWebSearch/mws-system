@@ -70,7 +70,16 @@ services:
       - indexes:/indexes/
     networks:
       - internal
-  
+
+  mwscron:
+    image: mathwebsearch/mws-cron
+    volumes:
+      - indexes:/indexes/
+      - harvests:/harvests/
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - internal
+
   ###
   ### The LaTeXML backend
   latexml:
@@ -80,7 +89,7 @@ services:
 
 volumes:
   indexes:
-    external: true
+  harvests:
   nginx_vhost:
   nginx_certs:
   nginx_html:
