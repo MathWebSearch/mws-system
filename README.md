@@ -30,7 +30,7 @@ Furthermore, for a local setup, it is safe to accept all defaults.
 
 ## Starting and Stopping
 
-**WARNING:** Do not attempt to run any of these commands without having gone through the configure script first. 
+**WARNING:** Do not attempt to run any of these commands without having gone through the configure script and having bootstrapped (see below) first. 
 
 After having configured appropriatly, you can start the setup as follows:
 
@@ -45,34 +45,35 @@ docker-compose down
 docker-compose down -v
 ```
 
-## Updating the index
+## Index Bootstrap && Updating
 
-The setup expects an MWS index to live within the `index` volume.
+The setup expects an MWS index to live within the `index` volume and an MWS harvest to live within the `harvests` volume or startup may fail. 
 
-For convenience, it is automatically generated from the `harvests` volume using the [mathwebsearch/mws-indexer](https://github.com/MathWebSearch/mws-indexer) image. 
-This means that if the harvests volume is seeded with a git repository, `git pull` will be run automatically to fetch new harvests. 
-
-To initialize the `harvests` you can manually start a container with the mounted volume, e.g. `docker run -v mws-system_harvests:/harvests/ -i --rm alpine` and then run something along the lines of:
+Bootstrapping this has to be done in three steps, making use of the [mathwebsearch/mws-indexer](https://github.com/MathWebSearch/mws-indexer) indexer. 
 
 ```bash
-# install git
-apk add git
 
-# clone into the harvests directory
-git clone https://my-harvest-repo/repo.git /harvests/
+# First create the index and harvests volumes
+docker volume create index
+docker volume create harvests
 
-# and exit
-exit
+# Then initialize data inside the harvests volume, e.g. using git
+docker run -t -i --rm -v harvests:/harvests/ alpine 'apk add git; git clone https://my.harvest.server.com/harvests.git /harvests/'
+
+# Run an initial indexer
+docker run -t -i --rm -v harvests:/data/ -v index:/index/ mathwebsearch/mws-indexer
 ```
 
-`mwscron` is used to automatically run the indexing every day at midnight. 
-To trigger indexing manually, run:
+For convenience, further indexes are automatically updated using the `mwscron` service. 
+This makes use of the same indexing image. 
+If the harvests directory is a git repository, this image will also automatically run `git pull`. 
+
+The index is automatically re-generated every day at midnight (GMT).
+However re-indexing can also be triggered manually using the following command:
 
 ```bash
     docker-compose exec mwscron /mws-cron --trigger
 ```
-
-to update the index.
 
 ## License
 

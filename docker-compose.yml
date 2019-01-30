@@ -89,7 +89,9 @@ services:
 
 volumes:
   index:
+    external: true
   harvests:
+    external: true
   nginx_vhost:
   nginx_certs:
   nginx_html:
