@@ -69,7 +69,7 @@ exit
 To trigger indexing manually, run:
 
 ```bash
-    docker-compose run mwscron /mws-cron --trigger
+    docker-compose exec mwscron /mws-cron --trigger
 ```
 
 to update the index.
