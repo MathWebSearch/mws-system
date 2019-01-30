@@ -50,9 +50,9 @@ docker-compose down -v
 The setup expects an MWS index to live within the `index` volume.
 
 For convenience, it is automatically generated from the `harvests` volume using the [mathwebsearch/mws-indexer](https://github.com/MathWebSearch/mws-indexer) image. 
-This means, that if the harvests volume is seeded with a git repository, `git pull` will be run automatically to fetch new harvests. 
+This means that if the harvests volume is seeded with a git repository, `git pull` will be run automatically to fetch new harvests. 
 
-To initialize the `harvests` you can manually start a container with the mounted volume, e.g. `docker run -v mws_system_harvests:/harvests/ -i --rm alpine` and then run something along the lines of:
+To initialize the `harvests` you can manually start a container with the mounted volume, e.g. `docker run -v mws-system_harvests:/harvests/ -i --rm alpine` and then run something along the lines of:
 
 ```bash
 # install git

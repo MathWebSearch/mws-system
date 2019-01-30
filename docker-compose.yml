@@ -65,17 +65,17 @@ services:
     image: mathwebsearch/mathwebsearch
     labels: 
       - org.mathweb.mwsd
-    command: /mws/bin/mwsd -D /indexes/ -p 8080
+    command: /mws/bin/mwsd -D /index/ -p 8080
     volumes:
-      - indexes:/indexes/
+      - index:/index/
     networks:
       - internal
 
   mwscron:
     image: mathwebsearch/mws-cron
     volumes:
-      - indexes:/indexes/
-      - harvests:/harvests/
+      - index:/index/
+      - harvests:/data/
       - "/var/run/docker.sock:/var/run/docker.sock"
     networks:
       - internal
@@ -88,7 +88,7 @@ services:
       - internal
 
 volumes:
-  indexes:
+  index:
   harvests:
   nginx_vhost:
   nginx_certs:
